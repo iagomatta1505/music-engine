@@ -1,0 +1,15 @@
+<h1>Editar Música</h1>
+
+<form method="post">
+    {% csrf_token %}
+    <label>Título:</label>
+    <input type="text" name="title" value="{{ music.title }}" required>
+    
+    <label>Artista:</label>
+    <input type="text" name="artist" value="{{ music.artist }}" required>
+    
+    <button type="submit">Salvar Alterações</button>
+</form>
+
+<br>
+<a href="{% url 'dashboard_index' %}"><button>Cancelar e Voltar</button></a>

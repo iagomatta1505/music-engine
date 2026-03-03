@@ -1,0 +1,11 @@
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Registrar</button>
+</form>
+
+{% if form.errors %}
+    <div style="color: red;">
+        {{ form.errors }}
+    </div>
+{% endif %}

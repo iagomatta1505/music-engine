@@ -1,0 +1,122 @@
+<script src="https://w.soundcloud.com/player/api.js"></script>
+
+<script>
+    // Inicializa o widget do SoundCloud
+    var widget;
+    window.onload = function() {
+        widget = SC.Widget(document.getElementById('sc-widget'));
+    };
+
+    function playMusic(url) {
+        widget.load(url, {auto_play: true});
+    }
+
+    // Função para Play/Pause
+    function togglePlay() {
+        widget.toggle();
+    }
+    
+    // Função para o slider de volume (0 a 100)
+    function setVolume(value) {
+        widget.setVolume(value);
+    }
+</script>
+
+<div style="display: flex; min-height: 100vh;"> 
+    <div style="flex: 1; padding: 20px;">
+        <h1>Bem-vindo, {{ user.username }}!</h1>
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
+
+        <hr style="margin: 20px 0;">
+
+        <h2>Gerenciar Músicas</h2>
+        <form method="post" action="{% url 'dashboard_index' %}">
+            {% csrf_token %}
+            <input type="text" name="title" placeholder="Nome da Música" required><br>
+            <input type="text" name="artist" placeholder="Artista (Opcional)"><br>
+            <input type="url" name="soundcloud_url" placeholder="Link SoundCloud" required><br>
+            <button type="submit" name="add_music">Adicionar Música</button> 
+        </form>
+
+        <h2>Minhas Músicas</h2>
+        <table border="1" cellpadding="10" cellspacing="0">
+            <thead><tr><th>Título</th><th>Artista</th><th>Ações</th></tr></thead>
+            <tbody>
+                {% for music in musics %}
+                <tr>
+                    <td>{{ music.title }}</td>
+                    <td>{{ music.artist }}</td>
+                    <td>
+                        <button onclick="playMusic('{{ music.soundcloud_url }}')">Tocar</button>
+                        <a href="{% url 'edit_music' music.id %}"><button>Editar</button></a>
+                        <form action="{% url 'delete_music' music.id %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h2>Criação de álbuns</h2>
+        <form method="post" action="{% url 'dashboard_index' %}">
+            {% csrf_token %}
+            <div style="border: 6px solid #888; padding: 15px; height: 200px; overflow-y: auto; width: 80%;">
+                {% for album in albums %}
+                    <div>
+                        <input type="radio" name="album_id" value="{{ album.id }}" required>
+                        <strong>{{ album.name }}</strong>
+                    </div>
+                {% empty %}
+                    <p>A caixa está vazia. Crie seu primeiro álbum!</p>
+                {% endfor %}
+            </div>
+            <div style="margin-top: 10px;">
+                <button type="submit" name="action" value="criar">Criar</button>
+                <button type="submit" name="action" value="editar">Editar</button>
+                <button type="submit" name="action" value="ver">Ver</button>
+                <button type="submit" name="action" value="remover">Remover</button>
+            </div>
+        </form>
+    </div>
+
+    <div style="width: 2px; background-color: #000; margin: 0 20px;"></div>
+    
+    <div style="flex: 1; padding: 20px;">
+        <h2>Busca de Músicas</h2>
+        
+        <div id="audio-player-container" style="background: #222; padding: 10px; margin-bottom: 20px; color: white;">
+            <iframe id="sc-widget" width="100%" height="100" scrolling="no" frameborder="no" allow="autoplay" 
+                    src="https://w.soundcloud.com/player/?url=https://soundcloud.com">
+            </iframe>
+            
+            <div style="margin-top: 10px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                <button onclick="togglePlay()">Play / Pause</button>
+                
+                <label for="vol-slider">Volume:</label>
+                <input type="range" id="vol-slider" min="0" max="100" value="50" oninput="setVolume(this.value)">
+            </div>
+        </div>
+
+        <form method="GET" action="{% url 'dashboard_index' %}">
+            <input type="text" name="search_musics" value="{{ search_term|default:'' }}" placeholder="Digite o nome ou artista...">
+            <button type="submit">Buscar</button>
+            <a href="{% url 'dashboard_index' %}"><button type="button">Limpar</button></a>
+        </form>
+
+        <div style="margin-top: 20px;">
+            {% for music in musics %}
+                <div style="padding: 5px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between;">
+                    <span>{{ music.title }} - <em>{{ music.artist }}</em></span>
+                    <button onclick="playMusic('{{ music.soundcloud_url }}')">Tocar</button>
+                </div>
+            {% empty %}
+                <p>Nenhuma música encontrada.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
