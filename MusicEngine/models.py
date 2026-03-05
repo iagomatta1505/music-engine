@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 class Music(models.Model):
     title = models.CharField(max_length=200)
     artist = models.CharField(max_length=200, default="Artista desconhecido")
-    soundcloud_url = models.URLField(max_length=500)  # Novo campo obrigatório
+    soundcloud_url = models.URLField(max_length=500)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
