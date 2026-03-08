@@ -1,5 +1,6 @@
-O sistema resolve o problema da fragmentação de ativos digitais, gerenciamento de faixas e a organização de portfólios em álbuns.
+Music Engine
 =====================================================================================================================================================
+**O sistema resolve o problema da fragmentação de ativos digitais, gerenciamento de faixas e a organização de portfólios em álbuns.**
 
 🚀 **Funcionalidades Principais**
 
